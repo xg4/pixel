@@ -1,1 +1,1 @@
-# micro-pixel
+# Micro Pixel
