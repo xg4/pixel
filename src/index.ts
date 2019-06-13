@@ -62,6 +62,11 @@ export default class MicroPixel {
   //   return c
   // }
 
+  // private getColorIndicesForCoord(x: number, y: number, width: number) {
+  //   const red = y * (width * 4) + x * 4
+  //   return [red, red + 1, red + 2, red + 3]
+  // }
+
   private clone() {
     const cloneData = this.ctx.createImageData(this.origin)
 
@@ -120,24 +125,103 @@ export default class MicroPixel {
     return this.queue
   }
 
+  /**
+   * @description 连环画效果 与图像灰度化后的效果相似,它们都是灰度图,但连环画增大了图像的对比度,使整体明暗效果更强
+   */
+  public comic() {
+    const imageData = this.clone()
+    const { data } = imageData
+    for (let i = 0; i < data.length - 4; i += 4) {
+      // 遍历各像素分量
+      data[i] =
+        (Math.abs(data[i + 1] - data[i + 2] + data[i + 1] + data[i]) *
+          data[i]) /
+        256
+      data[i + 1] =
+        (Math.abs(data[i + 2] - data[i + 1] + data[i + 2] + data[i]) *
+          data[i]) /
+        256
+      data[i + 2] =
+        (Math.abs(data[i + 2] - data[i + 1] + data[i + 2] + data[i]) *
+          data[i + 1]) /
+        256
+    }
+    return imageData
+  }
+
+  /**
+   * @description 怀旧效果
+   */
+  public nostalgia() {
+    const imageData = this.clone()
+    const { data } = imageData
+    for (let i = 0; i < data.length - 4; i += 4) {
+      // 遍历各像素分量
+      const dr = 0.393 * data[i] + 0.769 * data[i + 1] + 0.189 * data[i + 2]
+      const dg = 0.349 * data[i] + 0.686 * data[i + 1] + 0.168 * data[i + 2]
+      const db = 0.272 * data[i] + 0.534 * data[i + 1] + 0.131 * data[i + 2]
+
+      const scale = Math.random() * 0.5 + 0.5
+
+      data[i] = scale * dr + (1 - scale) * data[i]
+      data[i + 1] = scale * dg + (1 - scale) * data[i + 1]
+      data[i + 2] = scale * db + (1 - scale) * data[i + 2]
+    }
+    return imageData
+  }
+
+  /**
+   * @description 亮度
+   * @param brightness -100~100
+   */
+  public brightness(brightness = 0) {
+    const imageData = this.clone()
+    const { data } = imageData
+    for (var i = 0; i < data.length; i += 4) {
+      data[i] += 255 * (brightness / 100)
+      data[i + 1] += 255 * (brightness / 100)
+      data[i + 2] += 255 * (brightness / 100)
+    }
+    return imageData
+  }
+
+  /**
+   * @description 对比度
+   * @param contrast
+   */
+  public contrast(contrast = 0) {
+    const imageData = this.clone()
+    const { data } = imageData
+    const factor = (259.0 * (contrast + 255.0)) / (255.0 * (259.0 - contrast))
+    for (var i = 0; i < data.length; i += 4) {
+      data[i] = factor * (data[i] - 128.0) + 128.0
+
+      data[i + 1] = factor * (data[i + 1] - 128.0) + 128.0
+
+      data[i + 2] = factor * (data[i + 2] - 128.0) + 128.0
+    }
+    return imageData
+  }
+
   public invert() {
     const imageData = this.clone()
-    for (var i = 0; i < imageData.data.length; i += 4) {
-      imageData.data[i] = 255 - imageData.data[i]
-      imageData.data[i + 1] = 255 - imageData.data[i + 1]
-      imageData.data[i + 2] = 255 - imageData.data[i + 2]
+    const { data } = imageData
+    for (var i = 0; i < data.length; i += 4) {
+      data[i] = 255 - data[i]
+      data[i + 1] = 255 - data[i + 1]
+      data[i + 2] = 255 - data[i + 2]
     }
     return imageData
   }
 
   public grayscale() {
     const imageData = this.clone()
-    for (let i = 0; i < imageData.data.length; i += 4) {
-      const avg =
-        (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3
-      imageData.data[i] = avg
-      imageData.data[i + 1] = avg
-      imageData.data[i + 2] = avg
+    const { data } = imageData
+    for (let i = 0; i < data.length; i += 4) {
+      const avg = (data[i] + data[i + 1] + data[i + 2]) / 3
+      data[i] = avg
+      data[i + 1] = avg
+      data[i + 2] = avg
     }
 
     return imageData

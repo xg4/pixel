@@ -32,13 +32,33 @@ const App: React.FC = () => {
     can.current.getContext('2d').putImageData(mp.grayscale(), 0, 0)
   }
 
+  const handleBrightness = () => {
+    can.current.getContext('2d').putImageData(mp.brightness(50), 0, 0)
+  }
+
+  const handleContrast = () => {
+    can.current.getContext('2d').putImageData(mp.contrast(300), 0, 0)
+  }
+
+  const handleNostalgia = () => {
+    can.current.getContext('2d').putImageData(mp.nostalgia(), 0, 0)
+  }
+
+  const handleComic = () => {
+    can.current.getContext('2d').putImageData(mp.comic(), 0, 0)
+  }
+
   return (
     <div>
       <canvas ref={can} />
 
+      <button onClick={handleComic}>comic</button>
       <button onClick={handleOrigin}>origin</button>
       <button onClick={handleGrayscale}>grayscale</button>
       <button onClick={handleInvert}>invert</button>
+      <button onClick={handleBrightness}>brightness</button>
+      <button onClick={handleContrast}>contrast</button>
+      <button onClick={handleNostalgia}>nostalgia</button>
     </div>
   )
 }
