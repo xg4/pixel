@@ -1,3 +1,5 @@
+import { shuffle } from './utils'
+
 export default class MicroPixel {
   private frame: number
   private c: HTMLCanvasElement
@@ -126,7 +128,33 @@ export default class MicroPixel {
   }
 
   /**
-   * @description 连环画效果 与图像灰度化后的效果相似,它们都是灰度图,但连环画增大了图像的对比度,使整体明暗效果更强
+   * @description 随机 乱序 打散
+   */
+  public shuffle() {
+    const imageData = this.clone()
+    const { data } = imageData
+    shuffle(data)
+    return imageData
+  }
+
+  /**
+   * @description 溶铸效果
+   */
+  public casting() {
+    const imageData = this.clone()
+    const { data } = imageData
+    for (let i = 0; i < data.length - 4; i += 4) {
+      data[i] = (data[i] * 128) / (data[i + 1] + data[i + 2] + 1)
+      data[i + 1] = (data[i + 1] * 128) / (data[i] + data[i + 2] + 1)
+      data[i + 2] = (data[i + 2] * 128) / (data[i] + data[i + 1] + 1)
+    }
+    return imageData
+  }
+
+  /**
+   * @description 连环画效果
+   *              与图像灰度化后的效果相似，它们都是灰度图，
+   *              但连环画增大了图像的对比度，使整体明暗效果更强
    */
   public comic() {
     const imageData = this.clone()
@@ -214,14 +242,17 @@ export default class MicroPixel {
     return imageData
   }
 
+  /**
+   * @description 灰度 黑白照
+   */
   public grayscale() {
     const imageData = this.clone()
     const { data } = imageData
     for (let i = 0; i < data.length; i += 4) {
-      const avg = (data[i] + data[i + 1] + data[i + 2]) / 3
-      data[i] = avg
-      data[i + 1] = avg
-      data[i + 2] = avg
+      const gray = (data[i] + data[i + 1] + data[i + 2]) / 3
+      data[i] = gray
+      data[i + 1] = gray
+      data[i + 2] = gray
     }
 
     return imageData

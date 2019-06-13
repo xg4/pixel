@@ -48,10 +48,19 @@ const App: React.FC = () => {
     can.current.getContext('2d').putImageData(mp.comic(), 0, 0)
   }
 
+  const handleCasting = () => {
+    can.current.getContext('2d').putImageData(mp.casting(), 0, 0)
+  }
+
+  const handleShuffle = () => {
+    can.current.getContext('2d').putImageData(mp.shuffle(), 0, 0)
+  }
+
   return (
     <div>
       <canvas ref={can} />
-
+      <button onClick={handleShuffle}>shuffle</button>
+      <button onClick={handleCasting}>casting</button>
       <button onClick={handleComic}>comic</button>
       <button onClick={handleOrigin}>origin</button>
       <button onClick={handleGrayscale}>grayscale</button>
