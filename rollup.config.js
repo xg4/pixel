@@ -10,16 +10,12 @@ export default {
   input: 'src/index.ts',
   output: [
     {
-      file: pkg.main,
-      format: 'cjs'
-    },
-    {
       file: pkg.module,
       format: 'es'
     },
     {
-      name: pkg.name,
-      file: pkg.browser,
+      name: 'Pixel',
+      file: pkg.main,
       format: 'umd'
     }
   ],

@@ -1,27 +1,28 @@
 {
-  "name": "micro-pixel",
+  "name": "@xg4/pixel",
   "version": "0.1.0",
-  "description": "micro pixel",
+  "description": "pixel processing",
   "keywords": [
     "canvas",
+    "imageData",
     "pixel"
   ],
-  "homepage": "https://github.com/xg4/micro-pixel#readme",
+  "homepage": "https://github.com/xg4/pixel#readme",
   "bugs": {
-    "url": "https://github.com/xg4/micro-pixel/issues"
+    "url": "https://github.com/xg4/pixel/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xg4/micro-pixel.git"
+    "url": "git+https://github.com/xg4/pixel.git"
   },
   "license": "MIT",
   "author": "xg4 <xingor4@gmail.com>",
   "files": [
     "dist"
   ],
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.min.js",
   "module": "dist/index.esm.js",
-  "browser": "dist/index.umd.js",
+  "browser": "dist/index.min.js",
   "types": "dist/types/index.d.ts",
   "typings": "dist/types/index.d.ts",
   "scripts": {
