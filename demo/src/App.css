@@ -2,18 +2,27 @@ body {
   margin: 0;
 }
 
-.source {
-  width: 200px;
-  height: 200px;
+.title {
+  text-align: center;
 }
 
-.btns {
+.showcase {
+  display: flex;
+  justify-content: center;
+}
+
+.showcase > * {
+  border: 1px solid #eee;
+  margin: 10px;
+}
+
+.control {
   width: 500px;
-  margin: 0 auto;
+  margin: 20px auto;
   display: flex;
   flex-wrap: wrap;
 }
 
-.btns button {
+.control button {
   margin: 10px;
 }

@@ -1,46 +1,82 @@
-import { shuffle } from './utils'
+import { isImage, isImageData, isCanvas, shuffle } from './utils'
 
 export default class MicroPixel {
-  private c: HTMLCanvasElement
-  private ctx: CanvasRenderingContext2D
-  private source: ImageData
-
-  private get width() {
-    return this.source.width
+  public static createImage(url: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const image = new Image()
+      image.onload = () => {
+        resolve(image)
+      }
+      image.onerror = reject
+      image.src = url
+    })
   }
 
-  private get height() {
-    return this.source.height
+  private $c: HTMLCanvasElement
+  private $ctx: CanvasRenderingContext2D
+
+  private $source: ImageData
+
+  public get width() {
+    return this.$c.width
+  }
+
+  public get height() {
+    return this.$c.height
   }
 
   public get origin() {
-    return this.source
+    return this.$source
   }
 
-  public constructor(source: ImageData) {
-    this.c = document.createElement('canvas')
-    this.ctx = this.c.getContext('2d') as CanvasRenderingContext2D
+  public constructor(data: HTMLImageElement | ImageData | HTMLCanvasElement) {
+    this.$c = document.createElement('canvas')
+    this.$ctx = this.$c.getContext('2d') as CanvasRenderingContext2D
 
-    this.source = source
-    this.c.width = this.source.width
-    this.c.height = this.source.height
+    if (isImage(data) || isImageData(data) || isCanvas(data)) {
+      const { width, height } = data
+      this.$c.width = width
+      this.$c.height = height
+      this.$source = this.createImageData(data)
+    } else {
+      throw new TypeError(`${data} is not a HTMLImageElement or ImageData`)
+    }
   }
 
-  public toggleSmoothing(flag: boolean) {
-    this.ctx.imageSmoothingEnabled = flag
+  private createImageData(
+    data: HTMLImageElement | ImageData | HTMLCanvasElement
+  ) {
+    if (isImageData(data)) {
+      return this.clone(data)
+    }
+
+    if (isCanvas(data)) {
+      const ctx = data.getContext('2d') as CanvasRenderingContext2D
+      return ctx.getImageData(0, 0, data.width, data.height)
+    }
+
+    this.clean()
+    if (isImage(data)) {
+      this.$ctx.drawImage(data, 0, 0, this.width, this.height)
+    }
+    return this.$ctx.getImageData(0, 0, this.width, this.height)
   }
 
   private clean() {
-    return this.ctx.clearRect(0, 0, this.width, this.height)
+    return this.$ctx.clearRect(0, 0, this.width, this.height)
   }
 
-  // private getColorIndicesForCoord(x: number, y: number, width: number) {
-  //   const red = y * (width * 4) + x * 4
+  private getPixelIndex(x: number, y: number, width: number) {
+    return (y * width + x) * 4
+  }
+
+  // private getColorIndices(x: number, y: number, width: number) {
+  //   const red = this.getPixelIndex(x, y, width)
   //   return [red, red + 1, red + 2, red + 3]
   // }
 
-  private clone() {
-    const cloneData = this.ctx.createImageData(this.origin)
+  private clone(data?: ImageData) {
+    const cloneData = this.$ctx.createImageData(data || this.origin)
 
     for (let i = 0; i < this.origin.data.length; i++) {
       cloneData.data[i] = this.origin.data[i]
@@ -50,22 +86,28 @@ export default class MicroPixel {
   }
 
   private mirrorPixel(target: ImageData, index: number) {
-    const width = this.source.width * 4
+    const width = this.$source.width * 4
     const min = width * Math.floor(index / width)
     const max = min + width
     for (let offset = 0; offset < 4; offset++) {
-      target.data[index + offset] = this.source.data[max - index + min + offset]
+      target.data[index + offset] = this.$source.data[
+        max - index + min + offset
+      ]
     }
   }
 
-  private fillPixel(target: ImageData, index: number): void {
+  private fillPixel(target: ImageData, index: number) {
     for (let offset = 0; offset < 4; offset++) {
-      target.data[index + offset] = this.source.data[index + offset]
+      target.data[index + offset] = this.$source.data[index + offset]
     }
   }
 
-  private getPixelIndex(target: ImageData, x: number, y: number) {
-    return (y * target.width + x) * 4
+  /**
+   * @description 抗锯齿
+   * @param flag
+   */
+  public toggleSmoothing(flag: boolean) {
+    this.$ctx.imageSmoothingEnabled = flag
   }
 
   /**
@@ -75,7 +117,7 @@ export default class MicroPixel {
     const imageData = this.clone()
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {
-        this.mirrorPixel(imageData, this.getPixelIndex(imageData, x, y))
+        this.mirrorPixel(imageData, this.getPixelIndex(x, y, imageData.width))
       }
     }
     return imageData
@@ -85,7 +127,7 @@ export default class MicroPixel {
     const frame = 32
     const queue = Array(frame)
       .fill(null)
-      .map(() => this.ctx.createImageData(this.source))
+      .map(() => this.$ctx.createImageData(this.$source))
     const getTarget = (x: number) =>
       queue[Math.floor((frame * (Math.random() + (2 * x) / this.width)) / 3)]
 
@@ -93,7 +135,7 @@ export default class MicroPixel {
       for (let y = 0; y < this.height; y++) {
         for (let n = 0; n < 2; n++) {
           const target = getTarget(x)
-          const index = this.getPixelIndex(target, x, y)
+          const index = this.getPixelIndex(x, y, target.width)
           this.fillPixel(target, index)
         }
       }
@@ -135,7 +177,6 @@ export default class MicroPixel {
     const imageData = this.clone()
     const { data } = imageData
     for (let i = 0; i < data.length - 4; i += 4) {
-      // 遍历各像素分量
       data[i] =
         (Math.abs(data[i + 1] - data[i + 2] + data[i + 1] + data[i]) *
           data[i]) /
@@ -159,7 +200,6 @@ export default class MicroPixel {
     const imageData = this.clone()
     const { data } = imageData
     for (let i = 0; i < data.length - 4; i += 4) {
-      // 遍历各像素分量
       const dr = 0.393 * data[i] + 0.769 * data[i + 1] + 0.189 * data[i + 2]
       const dg = 0.349 * data[i] + 0.686 * data[i + 1] + 0.168 * data[i + 2]
       const db = 0.272 * data[i] + 0.534 * data[i + 1] + 0.131 * data[i + 2]
@@ -232,7 +272,6 @@ export default class MicroPixel {
       data[i + 1] = gray
       data[i + 2] = gray
     }
-
     return imageData
   }
 }

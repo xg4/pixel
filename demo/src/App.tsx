@@ -1,33 +1,26 @@
 import React, { useEffect } from 'react'
 import './App.css'
 import MicroPixel from '../../src'
-import { loadImage } from './util'
-
-let mp: MicroPixel
-
-loadImage(require('./assets/images/logo.jpg')).then(evt => {
-  console.log(evt.target instanceof Image)
-  const image = evt.target as HTMLImageElement
-  const c = document.createElement('canvas')
-  c.width = 200
-  c.height = 200
-  const { width, height } = c
-  const ctx = c.getContext('2d')
-  ctx.drawImage(image, 0, 0, width, height)
-  const originData = ctx.getImageData(0, 0, width, height)
-  console.log(originData.width, originData.height)
-  mp = new MicroPixel(originData)
-})
 
 const App: React.FC = () => {
   const showcase = React.createRef<HTMLCanvasElement>()
-  let ctx
+  const image = React.createRef<HTMLImageElement>()
+
+  let mp: MicroPixel, ctx: CanvasRenderingContext2D
 
   useEffect(() => {
-    showcase.current.width = 200
-    showcase.current.height = 200
-    ctx = showcase.current.getContext('2d')
-  })
+    const canvas = showcase.current
+    ctx = canvas.getContext('2d')
+
+    // MicroPixel.createImage(require('./assets/images/logo.jpg')).then(image => {
+    //   mp = new MicroPixel(image)
+    //   canvas.width = mp.width
+    //   canvas.height = mp.height
+    // })
+    mp = new MicroPixel(image.current)
+    canvas.width = mp.width
+    canvas.height = mp.height
+  }, [])
 
   const handleOrigin = () => {
     ctx.putImageData(mp.origin, 0, 0)
@@ -71,9 +64,12 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <img className="source" src={require('./assets/images/logo.jpg')} />
-      <canvas ref={showcase} />
-      <div className="btns">
+      <h2 className="title">效果</h2>
+      <div className="showcase">
+        <img ref={image} src={require('./assets/images/logo.jpg')} />
+        <canvas ref={showcase} />
+      </div>
+      <div className="control">
         <button onClick={handleMirror}>mirror</button>
         <button onClick={handleShuffle}>shuffle</button>
         <button onClick={handleCasting}>casting</button>
