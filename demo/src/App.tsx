@@ -15,6 +15,7 @@ loadImage(require('./assets/images/logo.jpg')).then(evt => {
   const ctx = c.getContext('2d')
   ctx.drawImage(image, 0, 0, width, height)
   const originData = ctx.getImageData(0, 0, width, height)
+  console.log(originData.width, originData.height)
   mp = new MicroPixel(originData)
 })
 
@@ -23,6 +24,8 @@ const App: React.FC = () => {
   let ctx
 
   useEffect(() => {
+    showcase.current.width = 200
+    showcase.current.height = 200
     ctx = showcase.current.getContext('2d')
   })
 
@@ -62,10 +65,16 @@ const App: React.FC = () => {
     ctx.putImageData(mp.shuffle(), 0, 0)
   }
 
+  const handleMirror = () => {
+    ctx.putImageData(mp.mirror(), 0, 0)
+  }
+
   return (
     <div>
+      <img className="source" src={require('./assets/images/logo.jpg')} />
       <canvas ref={showcase} />
       <div className="btns">
+        <button onClick={handleMirror}>mirror</button>
         <button onClick={handleShuffle}>shuffle</button>
         <button onClick={handleCasting}>casting</button>
         <button onClick={handleComic}>comic</button>
