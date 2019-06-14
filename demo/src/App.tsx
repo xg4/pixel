@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import './App.css'
 import MicroPixel from '../../src'
 import { loadImage } from './util'
 
@@ -18,56 +19,63 @@ loadImage(require('./assets/images/logo.jpg')).then(evt => {
 })
 
 const App: React.FC = () => {
-  const can = React.createRef<HTMLCanvasElement>()
+  const showcase = React.createRef<HTMLCanvasElement>()
+  let ctx
+
+  useEffect(() => {
+    ctx = showcase.current.getContext('2d')
+  })
 
   const handleOrigin = () => {
-    can.current.getContext('2d').putImageData(mp.origin, 0, 0)
+    ctx.putImageData(mp.origin, 0, 0)
   }
 
   const handleInvert = () => {
-    can.current.getContext('2d').putImageData(mp.invert(), 0, 0)
+    ctx.putImageData(mp.invert(), 0, 0)
   }
 
   const handleGrayscale = () => {
-    can.current.getContext('2d').putImageData(mp.grayscale(), 0, 0)
+    ctx.putImageData(mp.grayscale(), 0, 0)
   }
 
   const handleBrightness = () => {
-    can.current.getContext('2d').putImageData(mp.brightness(50), 0, 0)
+    ctx.putImageData(mp.brightness(50), 0, 0)
   }
 
   const handleContrast = () => {
-    can.current.getContext('2d').putImageData(mp.contrast(300), 0, 0)
+    ctx.putImageData(mp.contrast(300), 0, 0)
   }
 
   const handleNostalgia = () => {
-    can.current.getContext('2d').putImageData(mp.nostalgia(), 0, 0)
+    ctx.putImageData(mp.nostalgia(), 0, 0)
   }
 
   const handleComic = () => {
-    can.current.getContext('2d').putImageData(mp.comic(), 0, 0)
+    ctx.putImageData(mp.comic(), 0, 0)
   }
 
   const handleCasting = () => {
-    can.current.getContext('2d').putImageData(mp.casting(), 0, 0)
+    ctx.putImageData(mp.casting(), 0, 0)
   }
 
   const handleShuffle = () => {
-    can.current.getContext('2d').putImageData(mp.shuffle(), 0, 0)
+    ctx.putImageData(mp.shuffle(), 0, 0)
   }
 
   return (
     <div>
-      <canvas ref={can} />
-      <button onClick={handleShuffle}>shuffle</button>
-      <button onClick={handleCasting}>casting</button>
-      <button onClick={handleComic}>comic</button>
-      <button onClick={handleOrigin}>origin</button>
-      <button onClick={handleGrayscale}>grayscale</button>
-      <button onClick={handleInvert}>invert</button>
-      <button onClick={handleBrightness}>brightness</button>
-      <button onClick={handleContrast}>contrast</button>
-      <button onClick={handleNostalgia}>nostalgia</button>
+      <canvas ref={showcase} />
+      <div className="btns">
+        <button onClick={handleShuffle}>shuffle</button>
+        <button onClick={handleCasting}>casting</button>
+        <button onClick={handleComic}>comic</button>
+        <button onClick={handleOrigin}>origin</button>
+        <button onClick={handleGrayscale}>grayscale</button>
+        <button onClick={handleInvert}>invert</button>
+        <button onClick={handleBrightness}>brightness</button>
+        <button onClick={handleContrast}>contrast</button>
+        <button onClick={handleNostalgia}>nostalgia</button>
+      </div>
     </div>
   )
 }

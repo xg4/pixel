@@ -1,0 +1,10 @@
+.btns {
+  width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.btns button {
+  margin: 10px;
+}

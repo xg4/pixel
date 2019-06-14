@@ -4,37 +4,37 @@ export default class MicroPixel {
   private frame: number
   private c: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D
-  private origin: ImageData
+  private source: ImageData
   private queue: ImageData[]
 
-  private get width(): number {
-    return this.c.width
+  private get width() {
+    return this.source.width
   }
 
-  private set width(value) {
-    this.c.width = value
+  private get height() {
+    return this.source.height
   }
 
-  private get height(): number {
-    return this.c.height
+  public get origin() {
+    return this.source
   }
 
-  private set height(value) {
-    this.c.height = value
-  }
-
-  public constructor(origin: ImageData) {
+  public constructor(source: ImageData) {
     this.frame = 32
     this.c = document.createElement('canvas')
     this.ctx = this.c.getContext('2d') as CanvasRenderingContext2D
 
-    this.origin = origin
-    this.width = this.origin.width
-    this.height = this.origin.height
+    this.source = source
+    this.c.width = this.source.width
+    this.c.height = this.source.height
 
     this.queue = Array(this.frame)
       .fill(null)
-      .map(() => this.ctx.createImageData(this.origin))
+      .map(() => this.ctx.createImageData(this.source))
+  }
+
+  public toggleSmoothing(flag: boolean) {
+    this.ctx.imageSmoothingEnabled = flag
   }
 
   private clean() {
@@ -88,9 +88,9 @@ export default class MicroPixel {
     }
   }
 
-  private fillPixel(target: ImageData, master: ImageData, index: number): void {
+  private fillPixel(target: ImageData, index: number): void {
     for (let offset = 0; offset < 4; offset++) {
-      target.data[index + offset] = master.data[index + offset]
+      target.data[index + offset] = this.source.data[index + offset]
     }
   }
 
@@ -105,7 +105,7 @@ export default class MicroPixel {
     // }
   }
 
-  private getIndex(target: ImageData, x: number, y: number) {
+  private getPixelIndex(target: ImageData, x: number, y: number) {
     return (y * target.width + x) * 4
   }
 
@@ -119,7 +119,8 @@ export default class MicroPixel {
       for (let y = 0; y < this.height; y++) {
         for (let n = 0; n < 2; n++) {
           const target = getTarget(x)
-          this.fillPixel(target, this.origin, this.getIndex(target, x, y))
+          const index = this.getPixelIndex(target, x, y)
+          this.fillPixel(target, index)
         }
       }
     }
@@ -231,6 +232,9 @@ export default class MicroPixel {
     return imageData
   }
 
+  /**
+   * @description 反向颜色
+   */
   public invert() {
     const imageData = this.clone()
     const { data } = imageData
