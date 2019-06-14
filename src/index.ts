@@ -14,7 +14,6 @@ export default class MicroPixel {
 
   private $c: HTMLCanvasElement
   private $ctx: CanvasRenderingContext2D
-
   private $source: ImageData
 
   public get width() {
@@ -155,7 +154,7 @@ export default class MicroPixel {
   }
 
   /**
-   * @description 溶铸效果
+   * @description 熔铸效果
    */
   public casting() {
     const imageData = this.clone()

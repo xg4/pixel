@@ -39,7 +39,7 @@ const App: React.FC = () => {
   }
 
   const handleContrast = () => {
-    ctx.putImageData(mp.contrast(300), 0, 0)
+    ctx.putImageData(mp.contrast(50), 0, 0)
   }
 
   const handleNostalgia = () => {
@@ -64,22 +64,22 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <h2 className="title">效果</h2>
+      <h2 className="title">图片效果</h2>
       <div className="showcase">
         <img ref={image} src={require('./assets/images/logo.jpg')} />
         <canvas ref={showcase} />
       </div>
       <div className="control">
-        <button onClick={handleMirror}>mirror</button>
-        <button onClick={handleShuffle}>shuffle</button>
-        <button onClick={handleCasting}>casting</button>
-        <button onClick={handleComic}>comic</button>
-        <button onClick={handleOrigin}>origin</button>
-        <button onClick={handleGrayscale}>grayscale</button>
-        <button onClick={handleInvert}>invert</button>
-        <button onClick={handleBrightness}>brightness</button>
-        <button onClick={handleContrast}>contrast</button>
-        <button onClick={handleNostalgia}>nostalgia</button>
+        <button onClick={handleMirror}>镜像 - mirror</button>
+        <button onClick={handleShuffle}>乱序 - shuffle</button>
+        <button onClick={handleCasting}>熔铸 - casting</button>
+        <button onClick={handleComic}>连环画 - comic</button>
+        <button onClick={handleOrigin}>原始 - origin</button>
+        <button onClick={handleGrayscale}>灰度 - grayscale</button>
+        <button onClick={handleInvert}>反向颜色 - invert</button>
+        <button onClick={handleBrightness}>亮度50 - brightness</button>
+        <button onClick={handleContrast}>对比度50 - contrast</button>
+        <button onClick={handleNostalgia}>怀旧 - nostalgia</button>
       </div>
     </div>
   )
