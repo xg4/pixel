@@ -75,10 +75,11 @@ export default class MicroPixel {
   // }
 
   private clone(data?: ImageData) {
-    const cloneData = this.$ctx.createImageData(data || this.origin)
+    const target = data || this.origin
+    const cloneData = this.$ctx.createImageData(target)
 
-    for (let i = 0; i < this.origin.data.length; i++) {
-      cloneData.data[i] = this.origin.data[i]
+    for (let i = 0; i < target.data.length; i++) {
+      cloneData.data[i] = target.data[i]
     }
 
     return cloneData
