@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+}
+
+.title {
+  text-align: center;
+}
+
+.showcase {
+  display: flex;
+  justify-content: center;
+}
+
+.showcase > * {
+  border: 1px solid #eee;
+  margin: 10px;
+}
+
+.control {
+  width: 500px;
+  margin: 20px auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.control button {
+  margin: 10px;
+}
