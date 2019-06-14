@@ -76,11 +76,8 @@ const Video: React.FC = () => {
             src={require('../assets/video/flower.webm')}
             type="video/webm"
           />
-          <source
-            src={require('../assets/video/flower.mp4')}
-            type="video/mp4"
-          />
-          Sorry, your browser doesnt support embedded videos.
+          <p>请使用最新版chrome浏览器</p>
+          <p>use chrome, please</p>
         </video>
         <canvas ref={canvas} />
       </div>
