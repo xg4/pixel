@@ -43,7 +43,7 @@
     "test:watch": "jest --watch --notify",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
-    "preversion": "npm run test",
+    "preversion": "npm run lint",
     "postversion": "npm publish"
   },
   "husky": {
