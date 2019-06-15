@@ -102,12 +102,21 @@ export default class Pixel {
     }
   }
 
+  public toDataURL(type?: string, quality?: any) {
+    return this.$c.toDataURL(type, quality)
+  }
+
+  public toBlob(type?: string, quality?: any): Promise<Blob | null> {
+    return new Promise(resolve => {
+      this.$c.toBlob(resolve, type, quality)
+    })
+  }
+
   /**
-   * @description 抗锯齿
-   * @param flag
+   * @description 切换抗锯齿
    */
-  public toggleSmoothing(flag: boolean) {
-    this.$ctx.imageSmoothingEnabled = flag
+  public toggleSmoothing() {
+    this.$ctx.imageSmoothingEnabled = !this.$ctx.imageSmoothingEnabled
   }
 
   /**
