@@ -102,14 +102,34 @@ export default class Pixel {
     }
   }
 
+  private putImageData() {
+    this.clean()
+    this.$ctx.putImageData(this.$source, this.width, this.height)
+  }
+
   public toDataURL(type?: string, quality?: any) {
+    this.putImageData()
     return this.$c.toDataURL(type, quality)
   }
 
   public toBlob(type?: string, quality?: any): Promise<Blob | null> {
     return new Promise(resolve => {
+      this.putImageData()
       this.$c.toBlob(resolve, type, quality)
     })
+  }
+
+  public async download(name: string = '') {
+    const blob = await this.toBlob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.download = name
+    a.href = url
+    a.style.display = 'none'
+    document.body.append(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
   }
 
   /**
