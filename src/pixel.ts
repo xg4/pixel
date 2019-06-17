@@ -1,11 +1,11 @@
 import { isImage, isImageData, isCanvas, shuffle, isVideo } from './utils'
 import px from './index'
 
-type pxLike =
-  | HTMLImageElement
+type PxSource =
   | ImageData
-  | HTMLCanvasElement
+  | HTMLImageElement
   | HTMLVideoElement
+  | HTMLCanvasElement
 
 export default class Pixel {
   // public static createImage(url: string): Promise<HTMLImageElement> {
@@ -31,19 +31,16 @@ export default class Pixel {
     return this.$c.height
   }
 
-  public constructor(data: pxLike) {
+  public constructor(data: PxSource) {
     this.$c = document.createElement('canvas')
     this.$ctx = this.$c.getContext('2d') as CanvasRenderingContext2D
-    this.$c.width = data.width
-    this.$c.height = data.height
 
     this.$source = this.parse(data)
   }
 
-  private parse(data: pxLike) {
-    if (isImageData(data)) {
-      return data
-    }
+  private parse(data: PxSource) {
+    this.$c.width = data.width
+    this.$c.height = data.height
 
     if (isCanvas(data)) {
       const ctx = data.getContext('2d') as CanvasRenderingContext2D
@@ -51,6 +48,9 @@ export default class Pixel {
     }
 
     this.clean()
+    if (isImageData(data)) {
+      this.$ctx.putImageData(data, this.width, this.height)
+    }
     if (isImage(data) || isVideo(data)) {
       this.$ctx.drawImage(data, 0, 0, this.width, this.height)
     }
