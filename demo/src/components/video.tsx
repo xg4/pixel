@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import MicroPixel from '../../../src'
+import px from '../../../src'
 import raf from 'raf'
 
 const Video: React.FC = () => {
@@ -16,9 +16,7 @@ const Video: React.FC = () => {
     let timer = null
 
     const loop = () => {
-      ctx.drawImage(v, 0, 0, c.width, c.height)
-      const data = ctx.getImageData(0, 0, c.width, c.height)
-      const imageData = new MicroPixel(data)[type]()
+      const imageData = px(v)[type]()
       ctx.putImageData(imageData, 0, 0)
       timer = raf(loop)
       console.log(1)
@@ -32,40 +30,8 @@ const Video: React.FC = () => {
     })
   }, [])
 
-  const handleInvert = () => {
-    type = 'invert'
-  }
-
-  const handleGrayscale = () => {
-    type = 'grayscale'
-  }
-
-  const handleBrightness = () => {
-    type = 'brightness'
-  }
-
-  const handleContrast = () => {
-    type = 'contrast'
-  }
-
-  const handleNostalgia = () => {
-    type = 'nostalgia'
-  }
-
-  const handleComic = () => {
-    type = 'comic'
-  }
-
-  const handleCasting = () => {
-    type = 'casting'
-  }
-
-  const handleShuffle = () => {
-    type = 'shuffle'
-  }
-
-  const handleMirror = () => {
-    type = 'mirror'
+  const handleMethods = ({ target }) => {
+    type = target.name
   }
   return (
     <section>
@@ -82,15 +48,45 @@ const Video: React.FC = () => {
         <canvas ref={canvas} />
       </div>
       <div className="control">
-        <button onClick={handleMirror}>镜像 - mirror</button>
-        <button onClick={handleShuffle}>乱序 - shuffle</button>
-        <button onClick={handleCasting}>熔铸 - casting</button>
-        <button onClick={handleComic}>连环画 - comic</button>
-        <button onClick={handleGrayscale}>灰度 - grayscale</button>
-        <button onClick={handleInvert}>反向颜色 - invert</button>
-        <button onClick={handleBrightness}>亮度50 - brightness</button>
-        <button onClick={handleContrast}>对比度50 - contrast</button>
-        <button onClick={handleNostalgia}>怀旧 - nostalgia</button>
+        <button onClick={handleMethods} name="blur">
+          模糊 - blur
+        </button>
+        <button onClick={handleMethods} name="relief">
+          浮雕 - relief
+        </button>
+        <button onClick={handleMethods} name="adjust">
+          灰色调 - adjust
+        </button>
+        <button onClick={handleMethods} name="mirror">
+          镜像 - mirror
+        </button>
+        <button onClick={handleMethods} name="shuffle">
+          乱序 - shuffle
+        </button>
+        <button onClick={handleMethods} name="casting">
+          熔铸 - casting
+        </button>
+        <button onClick={handleMethods} name="comic">
+          连环画 - comic
+        </button>
+        <button onClick={handleMethods} name="origin">
+          原始 - origin
+        </button>
+        <button onClick={handleMethods} name="grayscale">
+          灰度 - grayscale
+        </button>
+        <button onClick={handleMethods} name="invert">
+          反向颜色 - invert
+        </button>
+        <button onClick={handleMethods} name="brightness">
+          亮度10 - brightness
+        </button>
+        <button onClick={handleMethods} name="contrast">
+          对比度10 - contrast
+        </button>
+        <button onClick={handleMethods} name="nostalgia">
+          怀旧 - nostalgia
+        </button>
       </div>
     </section>
   )

@@ -1,64 +1,19 @@
 import React, { useEffect } from 'react'
-import MicroPixel from '../../../src'
+import px from '../../../src'
 
 const Image: React.FC = () => {
   const canvas = React.createRef<HTMLCanvasElement>()
   const image = React.createRef<HTMLImageElement>()
-  let mp: MicroPixel, ctx: CanvasRenderingContext2D
 
   useEffect(() => {
-    const c = canvas.current
-    const i = image.current
-    ctx = c.getContext('2d')
-
-    // MicroPixel.createImage(require('../assets/images/logo.jpg')).then(image => {
-    //   mp = new MicroPixel(image)
-    //   canvas.width = mp.width
-    //   canvas.height = mp.height
-    // })
-    mp = new MicroPixel(i)
-    c.width = mp.width
-    c.height = mp.height
+    canvas.current.width = 500
+    canvas.current.height = 500
   }, [])
 
-  const handleOrigin = () => {
-    ctx.putImageData(mp.origin, 0, 0)
-  }
-
-  const handleInvert = () => {
-    ctx.putImageData(mp.invert(), 0, 0)
-  }
-
-  const handleGrayscale = () => {
-    ctx.putImageData(mp.grayscale(), 0, 0)
-  }
-
-  const handleBrightness = () => {
-    ctx.putImageData(mp.brightness(50), 0, 0)
-  }
-
-  const handleContrast = () => {
-    ctx.putImageData(mp.contrast(50), 0, 0)
-  }
-
-  const handleNostalgia = () => {
-    ctx.putImageData(mp.nostalgia(), 0, 0)
-  }
-
-  const handleComic = () => {
-    ctx.putImageData(mp.comic(), 0, 0)
-  }
-
-  const handleCasting = () => {
-    ctx.putImageData(mp.casting(), 0, 0)
-  }
-
-  const handleShuffle = () => {
-    ctx.putImageData(mp.shuffle(), 0, 0)
-  }
-
-  const handleMirror = () => {
-    ctx.putImageData(mp.mirror(), 0, 0)
+  const handleMethods = ({ target }) => {
+    canvas.current
+      .getContext('2d')
+      .putImageData(px(image.current)[target.name](), 0, 0)
   }
   return (
     <section>
@@ -68,16 +23,45 @@ const Image: React.FC = () => {
         <canvas ref={canvas} />
       </div>
       <div className="control">
-        <button onClick={handleMirror}>镜像 - mirror</button>
-        <button onClick={handleShuffle}>乱序 - shuffle</button>
-        <button onClick={handleCasting}>熔铸 - casting</button>
-        <button onClick={handleComic}>连环画 - comic</button>
-        <button onClick={handleOrigin}>原始 - origin</button>
-        <button onClick={handleGrayscale}>灰度 - grayscale</button>
-        <button onClick={handleInvert}>反向颜色 - invert</button>
-        <button onClick={handleBrightness}>亮度50 - brightness</button>
-        <button onClick={handleContrast}>对比度50 - contrast</button>
-        <button onClick={handleNostalgia}>怀旧 - nostalgia</button>
+        <button onClick={handleMethods} name="blur">
+          模糊 - blur
+        </button>
+        <button onClick={handleMethods} name="relief">
+          浮雕 - relief
+        </button>
+        <button onClick={handleMethods} name="adjust">
+          灰色调 - adjust
+        </button>
+        <button onClick={handleMethods} name="mirror">
+          镜像 - mirror
+        </button>
+        <button onClick={handleMethods} name="shuffle">
+          乱序 - shuffle
+        </button>
+        <button onClick={handleMethods} name="casting">
+          熔铸 - casting
+        </button>
+        <button onClick={handleMethods} name="comic">
+          连环画 - comic
+        </button>
+        <button onClick={handleMethods} name="origin">
+          原始 - origin
+        </button>
+        <button onClick={handleMethods} name="grayscale">
+          灰度 - grayscale
+        </button>
+        <button onClick={handleMethods} name="invert">
+          反向颜色 - invert
+        </button>
+        <button onClick={handleMethods} name="brightness">
+          亮度10 - brightness
+        </button>
+        <button onClick={handleMethods} name="contrast">
+          对比度10 - contrast
+        </button>
+        <button onClick={handleMethods} name="nostalgia">
+          怀旧 - nostalgia
+        </button>
       </div>
     </section>
   )

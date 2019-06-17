@@ -80,11 +80,11 @@ export default class Pixel {
     return clone
   }
 
-  private fillPixel(target: ImageData, index: number) {
-    for (let offset = 0; offset < 4; offset++) {
-      target.data[index + offset] = this.$source.data[index + offset]
-    }
-  }
+  // private fillPixel(target: ImageData, index: number) {
+  //   for (let offset = 0; offset < 4; offset++) {
+  //     target.data[index + offset] = this.$source.data[index + offset]
+  //   }
+  // }
 
   private putImageData() {
     this.clean()
