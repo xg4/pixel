@@ -2,7 +2,7 @@ import Pixel from './pixel'
 
 const isPixel = (x: any): x is Pixel => x instanceof Pixel
 
-const px = (x: any): Pixel => {
+const px = (x: any) => {
   if (isPixel(x)) {
     return x.clone()
   }

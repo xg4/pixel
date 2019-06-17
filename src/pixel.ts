@@ -1,11 +1,16 @@
 import { isImage, isImageData, isCanvas, shuffle, isVideo } from './utils'
-import px from './index'
 
 type PxSource =
   | ImageData
   | HTMLImageElement
   | HTMLVideoElement
   | HTMLCanvasElement
+
+interface DownloadOptions {
+  name?: string
+  type?: string
+  quality?: any
+}
 
 export default class Pixel {
   // public static createImage(url: string): Promise<HTMLImageElement> {
@@ -49,7 +54,7 @@ export default class Pixel {
 
     this.clean()
     if (isImageData(data)) {
-      this.$ctx.putImageData(data, this.width, this.height)
+      this.$ctx.putImageData(data, 0, 0)
     }
     if (isImage(data) || isVideo(data)) {
       this.$ctx.drawImage(data, 0, 0, this.width, this.height)
@@ -71,7 +76,7 @@ export default class Pixel {
   // }
 
   public clone() {
-    return px(this.$source)
+    return new Pixel(this.$source)
   }
 
   public cloneImageData() {
@@ -88,7 +93,7 @@ export default class Pixel {
 
   private putImageData() {
     this.clean()
-    this.$ctx.putImageData(this.$source, this.width, this.height)
+    this.$ctx.putImageData(this.$source, 0, 0)
   }
 
   public toDataURL(type?: string, quality?: any) {
@@ -103,18 +108,23 @@ export default class Pixel {
     })
   }
 
-  // public async download(name: string = '') {
-  //   const blob = await this.toBlob()
-  //   const url = URL.createObjectURL(blob)
-  //   const a = document.createElement('a')
-  //   a.download = name
-  //   a.href = url
-  //   a.style.display = 'none'
-  //   document.body.append(a)
-  //   a.click()
-  //   a.remove()
-  //   URL.revokeObjectURL(url)
-  // }
+  public toBlobURL() {
+    return this.toBlob().then(URL.createObjectURL)
+  }
+
+  public download({ name, type, quality }: DownloadOptions = {}) {
+    return this.toBlob(type, quality).then(blob => {
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.download = name || ''
+      a.href = url
+      a.style.display = 'none'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    })
+  }
 
   /**
    * @description 切换抗锯齿
