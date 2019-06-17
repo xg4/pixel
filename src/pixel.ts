@@ -1,17 +1,23 @@
-import { isImage, isImageData, isCanvas, shuffle } from './utils'
+import { isImage, isImageData, isCanvas, shuffle, isVideo } from './utils'
 import px from './index'
 
+type pxLike =
+  | HTMLImageElement
+  | ImageData
+  | HTMLCanvasElement
+  | HTMLVideoElement
+
 export default class Pixel {
-  public static createImage(url: string): Promise<HTMLImageElement> {
-    return new Promise((resolve, reject) => {
-      const image = new Image()
-      image.onload = () => {
-        resolve(image)
-      }
-      image.onerror = reject
-      image.src = url
-    })
-  }
+  // public static createImage(url: string): Promise<HTMLImageElement> {
+  //   return new Promise((resolve, reject) => {
+  //     const image = new Image()
+  //     image.onload = () => {
+  //       resolve(image)
+  //     }
+  //     image.onerror = reject
+  //     image.src = url
+  //   })
+  // }
 
   private $c: HTMLCanvasElement
   private $ctx: CanvasRenderingContext2D
@@ -25,27 +31,18 @@ export default class Pixel {
     return this.$c.height
   }
 
-  public get origin() {
-    return this.$source
-  }
-
-  public constructor(data: HTMLImageElement | ImageData | HTMLCanvasElement) {
+  public constructor(data: pxLike) {
     this.$c = document.createElement('canvas')
     this.$ctx = this.$c.getContext('2d') as CanvasRenderingContext2D
+    this.$c.width = data.width
+    this.$c.height = data.height
 
-    if (isImage(data) || isImageData(data) || isCanvas(data)) {
-      const { width, height } = data
-      this.$c.width = width
-      this.$c.height = height
-      this.$source = this.parse(data)
-    } else {
-      throw new TypeError(`Invalid data : ${data}`)
-    }
+    this.$source = this.parse(data)
   }
 
-  private parse(data: HTMLImageElement | ImageData | HTMLCanvasElement) {
+  private parse(data: pxLike) {
     if (isImageData(data)) {
-      return new ImageData(data.data, data.width, data.height)
+      return data
     }
 
     if (isCanvas(data)) {
@@ -54,7 +51,7 @@ export default class Pixel {
     }
 
     this.clean()
-    if (isImage(data)) {
+    if (isImage(data) || isVideo(data)) {
       this.$ctx.drawImage(data, 0, 0, this.width, this.height)
     }
     return this.$ctx.getImageData(0, 0, this.width, this.height)
@@ -146,6 +143,10 @@ export default class Pixel {
 
   //   return queue
   // }
+
+  public origin() {
+    return this.$source
+  }
 
   /**
    * @description 随机 乱序 打散
@@ -315,25 +316,25 @@ export default class Pixel {
 
   /**
    * @description 亮度
-   * @param brightness -100~100
+   * @param value -100~100
    */
-  public brightness(brightness = 0) {
+  public brightness(value = 10) {
     const { data } = this.$source
     for (var i = 0; i < data.length; i += 4) {
-      data[i] += 255 * (brightness / 100)
-      data[i + 1] += 255 * (brightness / 100)
-      data[i + 2] += 255 * (brightness / 100)
+      data[i] += 255 * (value / 100)
+      data[i + 1] += 255 * (value / 100)
+      data[i + 2] += 255 * (value / 100)
     }
     return this.$source
   }
 
   /**
    * @description 对比度
-   * @param contrast
+   * @param value
    */
-  public contrast(contrast = 0) {
+  public contrast(value = 10) {
     const { data } = this.$source
-    const factor = (259.0 * (contrast + 255.0)) / (255.0 * (259.0 - contrast))
+    const factor = (259.0 * (value + 255.0)) / (255.0 * (259.0 - value))
     for (var i = 0; i < data.length; i += 4) {
       data[i] = factor * (data[i] - 128.0) + 128.0
 
