@@ -2,13 +2,21 @@ body {
   margin: 0;
 }
 
+section {
+  margin: 50px;
+  border: 1px solid #888;
+  overflow: scroll;
+}
+
 .title {
   text-align: center;
+  color: #333;
 }
 
 .showcase {
   display: flex;
-  justify-content: center;
+  flex-wrap: nowrap;
+  justify-content: space-around;
 }
 
 .showcase > * {
@@ -17,9 +25,10 @@ body {
 }
 
 .control {
-  width: 500px;
+  padding: 0 100px;
   margin: 20px auto;
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
 }
 

@@ -6,29 +6,25 @@ const Video: React.FC = () => {
   const video = React.createRef<HTMLVideoElement>()
   const canvas = React.createRef<HTMLCanvasElement>()
 
-  let type = 'grayscale'
+  let type = 'origin'
+  let timer = null
+
   useEffect(() => {
-    const v = video.current
-    const c = canvas.current
-    const ctx = c.getContext('2d')
-    v.width = c.width = 500
-    v.height = c.height = 300
-    let timer = null
-
-    const loop = () => {
-      const imageData = px(v)[type]()
-      ctx.putImageData(imageData, 0, 0)
-      timer = raf(loop)
-      console.log(1)
-    }
-    v.addEventListener('play', () => {
-      loop()
-    })
-
-    v.addEventListener('pause', () => {
-      raf.cancel(timer)
-    })
+    video.current.width = canvas.current.width = 450
+    video.current.height = canvas.current.height = 250
   }, [])
+
+  const loop = () => {
+    canvas.current
+      .getContext('2d')
+      .putImageData(px(video.current)[type](), 0, 0)
+    timer = raf(loop)
+    console.log(1)
+  }
+
+  const handleCancel = () => {
+    raf.cancel(timer)
+  }
 
   const handleMethods = ({ target }) => {
     type = target.name
@@ -37,7 +33,7 @@ const Video: React.FC = () => {
     <section>
       <h2 className="title">视频效果</h2>
       <div className="showcase">
-        <video ref={video} controls>
+        <video onPlay={loop} onPause={handleCancel} ref={video} controls>
           <source
             src={require('../assets/video/flower.webm')}
             type="video/webm"
