@@ -79,7 +79,7 @@ export default class Pixel {
     return new Pixel(this.$source)
   }
 
-  public cloneImageData() {
+  private cloneImageData() {
     const clone = this.$ctx.createImageData(this.$source)
     clone.data.set(this.$source.data)
     return clone
@@ -96,20 +96,20 @@ export default class Pixel {
     this.$ctx.putImageData(this.$source, 0, 0)
   }
 
-  public toDataURL(type?: string, quality?: any) {
-    this.putImageData()
-    return this.$c.toDataURL(type, quality)
-  }
-
-  public toBlob(type?: string, quality?: any): Promise<Blob | null> {
+  private toBlob(type?: string, quality?: any): Promise<Blob | null> {
     return new Promise(resolve => {
       this.putImageData()
       this.$c.toBlob(resolve, type, quality)
     })
   }
 
-  public toBlobURL() {
-    return this.toBlob().then(URL.createObjectURL)
+  public toDataURL(type?: string, quality?: any) {
+    this.putImageData()
+    return this.$c.toDataURL(type, quality)
+  }
+
+  public toBlobURL(type?: string, quality?: any) {
+    return this.toBlob(type, quality).then(URL.createObjectURL)
   }
 
   public download({ name, type, quality }: DownloadOptions = {}) {
