@@ -6,6 +6,11 @@ type PxSource =
   | HTMLVideoElement
   | HTMLCanvasElement
 
+interface PhantomOptions {
+  frame: number
+  density: number
+}
+
 interface DownloadOptions {
   name?: string
   type?: string
@@ -85,12 +90,6 @@ export default class Pixel {
     return clone
   }
 
-  // private fillPixel(target: ImageData, index: number) {
-  //   for (let offset = 0; offset < 4; offset++) {
-  //     target.data[index + offset] = this.$source.data[index + offset]
-  //   }
-  // }
-
   private putImageData() {
     this.clean()
     this.$ctx.putImageData(this.$source, 0, 0)
@@ -133,26 +132,32 @@ export default class Pixel {
     this.$ctx.imageSmoothingEnabled = !this.$ctx.imageSmoothingEnabled
   }
 
-  // public phantom() {
-  //   const frame = 32
-  //   const queue = Array(frame)
-  //     .fill(null)
-  //     .map(() => this.$ctx.createImageData(this.$source))
-  //   const getTarget = (x: number) =>
-  //     queue[Math.floor((frame * (Math.random() + (2 * x) / this.width)) / 3)]
+  /**
+   * @description phantom
+   * @param options
+   */
+  public phantom(options: Partial<PhantomOptions> = {}) {
+    const { frame = 32, density = 2 } = options
+    const queue = Array(frame)
+      .fill(null)
+      .map(() => this.$ctx.createImageData(this.$source))
+    const getTarget = (x: number) =>
+      queue[Math.floor((frame * (Math.random() + (2 * x) / this.width)) / 3)]
 
-  //   for (let x = 0; x < this.width; x++) {
-  //     for (let y = 0; y < this.height; y++) {
-  //       for (let n = 0; n < 2; n++) {
-  //         const target = getTarget(x)
-  //         const index = this.getPixelIndex(x, y, target.width)
-  //         this.fillPixel(target, index)
-  //       }
-  //     }
-  //   }
+    for (let x = 0; x < this.width; x++) {
+      for (let y = 0; y < this.height; y++) {
+        const target = getTarget(x)
+        const index = this.getPixelIndex(x, y, target.width)
+        for (let n = 0; n < density; n++) {
+          for (let offset = 0; offset < 4; offset++) {
+            target.data[index + offset] = this.$source.data[index + offset]
+          }
+        }
+      }
+    }
 
-  //   return queue
-  // }
+    return queue
+  }
 
   public origin() {
     return this.$source
