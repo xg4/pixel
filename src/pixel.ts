@@ -6,6 +6,11 @@ type PxSource =
   | HTMLVideoElement
   | HTMLCanvasElement
 
+interface PxOptions {
+  width: number
+  height: number
+}
+
 interface PhantomOptions {
   frame: number
   density: number
@@ -41,17 +46,15 @@ export default class Pixel {
     return this.$c.height
   }
 
-  public constructor(data: PxSource) {
+  public constructor(data: PxSource, options: Partial<PxOptions> = {}) {
     this.$c = document.createElement('canvas')
     this.$ctx = this.$c.getContext('2d') as CanvasRenderingContext2D
-
+    this.$c.width = options.width || data.width
+    this.$c.height = options.height || data.height
     this.$source = this.parse(data)
   }
 
   private parse(data: PxSource) {
-    this.$c.width = data.width
-    this.$c.height = data.height
-
     if (isCanvas(data)) {
       const ctx = data.getContext('2d') as CanvasRenderingContext2D
       return ctx.getImageData(0, 0, data.width, data.height)
