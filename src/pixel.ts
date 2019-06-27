@@ -1,22 +1,22 @@
 import { isImage, isImageData, isCanvas, shuffle, isVideo } from './utils'
 
-type PxSource =
+export type PxSource =
   | ImageData
   | HTMLImageElement
   | HTMLVideoElement
   | HTMLCanvasElement
 
-interface PxOptions {
+export interface PxOptions {
   width: number
   height: number
 }
 
-interface PhantomOptions {
+export interface PhantomOptions {
   frame: number
   density: number
 }
 
-interface DownloadOptions {
+export interface DownloadOptions {
   name?: string
   type?: string
   quality?: any
