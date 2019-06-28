@@ -25,15 +25,13 @@ const Item: React.FC<{ active: boolean; imageData: ImageData }> = ({
 }
 
 const Phantom = () => {
-  const image = createRef<HTMLImageElement>()
-
   const [phantom, setPhantom] = useState([])
 
   const [active, setActive] = useState(false)
 
-  useEffect(() => {
-    setPhantom(px(image.current).phantom())
-  }, [])
+  const handleLoad = (evt: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    setPhantom(px(evt.target).phantom())
+  }
 
   const handlePhantom = () => {
     setActive(!active)
@@ -46,9 +44,9 @@ const Phantom = () => {
         <img
           width="200"
           height="200"
-          ref={image}
           src={require('../assets/images/box.jpg')}
           alt=""
+          onLoad={handleLoad}
         />
 
         <div className="phantom">
