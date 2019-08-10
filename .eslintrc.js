@@ -26,7 +26,8 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', 'standard', 'jest', 'prettier', 'react'],
   rules: {
-    'no-console': process.env.NODE_ENV !== 'production' ? 0 : 2,
+    'no-console': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/no-explicit-any': 0
   }
