@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import px from '../../../src'
 import box from '../assets/images/box.jpg'
+import { download } from '../helpers'
 
 export default function ImageContainer() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -31,31 +32,23 @@ export default function ImageContainer() {
       return
     }
     const url = px(canvasRef.current).toDataURL()
-    console.log(url)
     setImageURL(url)
   }
 
-  const handleBlob = () => {
+  const handleBlob = async () => {
     if (!canvasRef.current) {
       return
     }
-    px(canvasRef.current)
-      .toBlobURL()
-      .then((url) => {
-        console.log(url)
-        url && setImageURL(url)
-      })
+    const url = await px(canvasRef.current).toBlobURL()
+    setImageURL(url)
   }
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!canvasRef.current) {
       return
     }
-    px(canvasRef.current)
-      .download({ type: 'image/jpeg' })
-      .then(() => {
-        console.log('downloaded')
-      })
+    const url = await px(canvasRef.current).toBlobURL()
+    download(url)
   }
 
   const buttons = [
