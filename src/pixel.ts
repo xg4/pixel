@@ -16,37 +16,20 @@ export interface PhantomOptions {
   density: number
 }
 
-export interface DownloadOptions {
-  name?: string
-  type?: string
-  quality?: any
-}
-
 export default class Pixel {
-  // public static createImage(url: string): Promise<HTMLImageElement> {
-  //   return new Promise((resolve, reject) => {
-  //     const image = new Image()
-  //     image.onload = () => {
-  //       resolve(image)
-  //     }
-  //     image.onerror = reject
-  //     image.src = url
-  //   })
-  // }
-
   private $c: HTMLCanvasElement
   private $ctx: CanvasRenderingContext2D
   private $source: ImageData
 
-  public get width() {
+  get width() {
     return this.$c.width
   }
 
-  public get height() {
+  get height() {
     return this.$c.height
   }
 
-  public constructor(data: PxSource, options: Partial<PxOptions> = {}) {
+  constructor(data: PxSource, options: Partial<PxOptions> = {}) {
     this.$c = document.createElement('canvas')
     this.$ctx = this.$c.getContext('2d') as CanvasRenderingContext2D
     this.$c.width = options.width || data.width
@@ -56,7 +39,10 @@ export default class Pixel {
 
   private parse(data: PxSource) {
     if (isCanvas(data)) {
-      const ctx = data.getContext('2d') as CanvasRenderingContext2D
+      const ctx = data.getContext('2d')
+      if (!ctx) {
+        throw new Error('canvas not support 2d context')
+      }
       return ctx.getImageData(0, 0, data.width, data.height)
     }
 
@@ -83,7 +69,7 @@ export default class Pixel {
   //   return [red, red + 1, red + 2, red + 3]
   // }
 
-  public clone() {
+  clone() {
     return new Pixel(this.$source)
   }
 
@@ -105,38 +91,23 @@ export default class Pixel {
     })
   }
 
-  public toDataURL(type?: string, quality?: any) {
+  toDataURL(type?: string, quality?: any) {
     this.putImageData()
     return this.$c.toDataURL(type, quality)
   }
 
-  public toBlobURL(type?: string, quality?: any) {
-    return this.toBlob(type, quality).then(
-      (blob) => blob && URL.createObjectURL(blob)
-    )
-  }
-
-  public download({ name, type, quality }: DownloadOptions = {}) {
-    return this.toBlob(type, quality).then((blob) => {
-      if (!blob) {
-        throw new Error('blob is null')
-      }
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.download = name || ''
-      a.href = url
-      a.style.display = 'none'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    })
+  async toBlobURL(type?: string, quality?: any) {
+    const blob = await this.toBlob(type, quality)
+    if (!blob) {
+      throw new Error('canvas toBlob error, blob is null')
+    }
+    return URL.createObjectURL(blob)
   }
 
   /**
    * @description 切换抗锯齿
    */
-  public toggleSmoothing() {
+  toggleSmoothing() {
     this.$ctx.imageSmoothingEnabled = !this.$ctx.imageSmoothingEnabled
   }
 
@@ -144,7 +115,7 @@ export default class Pixel {
    * @description phantom
    * @param options
    */
-  public phantom(options: Partial<PhantomOptions> = {}) {
+  phantom(options: Partial<PhantomOptions> = {}) {
     const { frame = 32, density = 2 } = options
     const queue = Array(frame)
       .fill(null)
@@ -167,14 +138,14 @@ export default class Pixel {
     return queue
   }
 
-  public origin() {
+  origin() {
     return this.$source
   }
 
   /**
    * @description 随机 乱序 打散
    */
-  public shuffle() {
+  shuffle() {
     const { data } = this.$source
     shuffle(data)
     return this.$source
@@ -183,7 +154,7 @@ export default class Pixel {
   /**
    * 浮雕
    */
-  public relief() {
+  relief() {
     const clone = this.cloneImageData()
     const width = clone.width
     const height = clone.height
@@ -204,7 +175,7 @@ export default class Pixel {
   /**
    * @description 模糊
    */
-  public blur() {
+  blur() {
     const clone = this.cloneImageData()
     const width = clone.width
     const height = clone.height
@@ -249,7 +220,7 @@ export default class Pixel {
   /**
    * @description 镜像
    */
-  public mirror() {
+  mirror() {
     const clone = this.cloneImageData()
     const width = clone.width
     const height = clone.height
@@ -271,7 +242,7 @@ export default class Pixel {
   /**
    * @description 熔铸效果
    */
-  public casting() {
+  casting() {
     const { data } = this.$source
     for (let i = 0; i < data.length - 4; i += 4) {
       data[i] = (data[i] * 128) / (data[i + 1] + data[i + 2] + 1)
@@ -286,7 +257,7 @@ export default class Pixel {
    *              与图像灰度化后的效果相似，它们都是灰度图，
    *              但连环画增大了图像的对比度，使整体明暗效果更强
    */
-  public comic() {
+  comic() {
     const { data } = this.$source
     for (let i = 0; i < data.length - 4; i += 4) {
       data[i] =
@@ -308,7 +279,7 @@ export default class Pixel {
   /**
    * @description 灰色调 adjust color values and make it more darker and gray
    */
-  public adjust() {
+  adjust() {
     const { data } = this.$source
     for (let i = 0; i < data.length - 4; i += 4) {
       data[i] = 0.272 * data[i] + 0.534 * data[i + 1] + 0.131 * data[i + 2]
@@ -321,7 +292,7 @@ export default class Pixel {
   /**
    * @description 怀旧效果
    */
-  public nostalgia() {
+  nostalgia() {
     const { data } = this.$source
     for (let i = 0; i < data.length - 4; i += 4) {
       const dr = 0.393 * data[i] + 0.769 * data[i + 1] + 0.189 * data[i + 2]
@@ -341,7 +312,7 @@ export default class Pixel {
    * @description 亮度
    * @param value -100~100
    */
-  public brightness(value = 10) {
+  brightness(value = 10) {
     const { data } = this.$source
     for (var i = 0; i < data.length; i += 4) {
       data[i] += 255 * (value / 100)
@@ -355,7 +326,7 @@ export default class Pixel {
    * @description 对比度
    * @param value
    */
-  public contrast(value = 10) {
+  contrast(value = 10) {
     const { data } = this.$source
     const factor = (259.0 * (value + 255.0)) / (255.0 * (259.0 - value))
     for (var i = 0; i < data.length; i += 4) {
@@ -371,7 +342,7 @@ export default class Pixel {
   /**
    * @description 反向颜色
    */
-  public invert() {
+  invert() {
     const { data } = this.$source
     for (var i = 0; i < data.length; i += 4) {
       data[i] = 255 - data[i]
@@ -384,7 +355,7 @@ export default class Pixel {
   /**
    * @description 灰度 黑白照
    */
-  public grayscale() {
+  grayscale() {
     const { data } = this.$source
     for (let i = 0; i < data.length; i += 4) {
       const avg = (data[i] + data[i + 1] + data[i + 2]) / 3
