@@ -17,77 +17,54 @@
   },
   "license": "MIT",
   "author": "xg4 <xingor4@gmail.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "browser": "./dist/index.umd.js",
+  "types": "./dist/types",
   "files": [
     "dist"
   ],
-  "main": "dist/index.min.js",
-  "module": "dist/index.esm.js",
-  "browser": "dist/index.min.js",
-  "types": "dist/types/index.d.ts",
-  "typings": "dist/types/index.d.ts",
   "scripts": {
-    "prebuild": "npm run clean",
-    "build": "npm run build:types && npm run build:js",
+    "build": "rimraf dist && npm run build:types && npm run build:js",
     "build:js": "rollup -c",
     "build:types": "tsc --emitDeclarationOnly",
-    "clean": "rimraf dist",
-    "lint": "eslint src/**/* --fix",
-    "prepublishOnly": "npm run build",
-    "postpublish": "git push && git push --tags",
-    "release:major": "npm version major -m \"build: release v%s\" ",
-    "release:minor": "npm version minor -m \"build: release v%s\" ",
-    "release:patch": "npm version patch -m \"build: release v%s\" ",
-    "start": "rollup -c -w",
-    "pretest": "npm run lint",
-    "test": "jest",
-    "test:cov": "npm run test -- --coverage",
-    "test:watch": "jest --watch --notify",
-    "type-check": "tsc --noEmit",
-    "type-check:watch": "npm run type-check -- --watch",
-    "preversion": "npm run lint",
-    "postversion": "npm publish"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "prettier --write",
-      "eslint --fix",
-      "git add"
-    ],
-    "*.{json,md,yml}": [
+    "*.{js,jsx,ts,tsx,json,md,yml}": [
       "prettier --write",
       "git add"
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-typescript": "^7.3.3",
-    "@typescript-eslint/eslint-plugin": "^2.1.0",
-    "@typescript-eslint/parser": "^2.1.0",
-    "eslint": "^6.3.0",
-    "eslint-config-prettier": "^6.2.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^22.16.0",
-    "eslint-plugin-node": "^9.2.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.14.3",
-    "eslint-plugin-standard": "^4.0.1",
-    "husky": "^3.0.5",
-    "lint-staged": "^9.2.5",
-    "prettier": "^1.18.2",
-    "rimraf": "^3.0.0",
-    "rollup": "^1.20.3",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-terser": "^5.1.1",
-    "typescript": "^3.6.2"
+    "@babel/core": "^7.18.6",
+    "@babel/preset-env": "^7.18.6",
+    "@babel/preset-typescript": "^7.18.6",
+    "@commitlint/cli": "17.0.3",
+    "@commitlint/config-conventional": "17.0.3",
+    "@rollup/plugin-babel": "5.3.1",
+    "@rollup/plugin-commonjs": "^22.0.1",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@semantic-release/changelog": "6.0.1",
+    "@semantic-release/commit-analyzer": "9.0.2",
+    "@semantic-release/git": "10.0.1",
+    "@semantic-release/github": "8.0.4",
+    "@semantic-release/npm": "9.0.1",
+    "@semantic-release/release-notes-generator": "10.0.3",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.75.7",
+    "rollup-plugin-terser": "^7.0.2",
+    "semantic-release": "19.0.3",
+    "typescript": "^4.7.4"
   }
 }

@@ -1,4 +1,4 @@
-import { isImage, isImageData, isCanvas, shuffle, isVideo } from './utils'
+import { isCanvas, isImage, isImageData, isVideo, shuffle } from './utils'
 
 export type PxSource =
   | ImageData
@@ -99,7 +99,7 @@ export default class Pixel {
   }
 
   private toBlob(type?: string, quality?: any): Promise<Blob | null> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.putImageData()
       this.$c.toBlob(resolve, type, quality)
     })
@@ -111,11 +111,16 @@ export default class Pixel {
   }
 
   public toBlobURL(type?: string, quality?: any) {
-    return this.toBlob(type, quality).then(URL.createObjectURL)
+    return this.toBlob(type, quality).then(
+      (blob) => blob && URL.createObjectURL(blob)
+    )
   }
 
   public download({ name, type, quality }: DownloadOptions = {}) {
-    return this.toBlob(type, quality).then(blob => {
+    return this.toBlob(type, quality).then((blob) => {
+      if (!blob) {
+        throw new Error('blob is null')
+      }
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.download = name || ''
