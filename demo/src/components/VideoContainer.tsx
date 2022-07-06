@@ -38,6 +38,9 @@ export default function VideoContainer() {
 
   const handleClick = (method: string) => {
     type.current = method
+    if (videoRef.current) {
+      videoRef.current.play()
+    }
   }
 
   const buttons = [
