@@ -1,16 +1,12 @@
-import React from 'react'
-import './App.css'
-import Image from './components/image'
-import Video from './components/video'
-import Phantom from './components/phantom'
+import ImageContainer from './components/ImageContainer'
+import VideoContainer from './components/VideoContainer'
 
-const App: React.FC = () => {
+function App() {
   return (
-    <>
-      <Image />
-      <Video />
-      <Phantom />
-    </>
+    <div className="bg-gray-200 min-h-screen">
+      <ImageContainer />
+      <VideoContainer />
+    </div>
   )
 }
 
