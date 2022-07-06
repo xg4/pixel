@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import px from '../../../src'
 import box from '../assets/images/box.jpg'
 import { download } from '../helpers'
+import Card from './Card'
 
 export default function ImageContainer() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -115,55 +116,45 @@ export default function ImageContainer() {
   ]
 
   return (
-    <div className="p-12">
-      <div className="border bg-white/70 border-gray-900 shadow-xl space-y-8 p-10">
-        <h2 className="text-gray-700 text-center font-bold text-xl">
-          图片效果
-        </h2>
-        <div className="flex justify-around">
-          <img className="border shadow-xl" ref={imageRef} src={box} />
-          <canvas className="border shadow-xl" ref={canvasRef} />
-        </div>
-        <div className="flex flex-wrap gap-4">
-          {buttons.map((btn) => (
-            <button
-              className="border border-gray-700 px-2"
-              key={btn.method}
-              onClick={() => {
-                handleClick(btn.method)
-              }}
-            >
-              {btn.name}
-            </button>
-          ))}
-        </div>
-        <h3 className="text-gray-700 text-center font-bold text-xl">
-          图片链接
-        </h3>
-        <div className="flex justify-center">
-          <img src={imageURL} alt={imageURL} />
-        </div>
-        <a href={imageURL} target="_blank">
-          {imageURL}
-        </a>
-        <div className="flex flex-wrap gap-4">
-          <button
-            className="border border-gray-700 px-2"
-            onClick={handleDataURL}
-          >
-            toDataURL
-          </button>
-          <button className="border border-gray-700 px-2" onClick={handleBlob}>
-            toBlobURL
-          </button>
-          <button
-            className="border border-gray-700 px-2"
-            onClick={handleDownload}
-          >
-            下载 - download
-          </button>
-        </div>
+    <Card title="图片效果">
+      <div className="flex justify-around">
+        <img className="border shadow-xl" ref={imageRef} src={box} />
+        <canvas className="border shadow-xl" ref={canvasRef} />
       </div>
-    </div>
+      <div className="flex flex-wrap gap-4">
+        {buttons.map((btn) => (
+          <button
+            className="border border-gray-700 px-2"
+            key={btn.method}
+            onClick={() => {
+              handleClick(btn.method)
+            }}
+          >
+            {btn.name}
+          </button>
+        ))}
+      </div>
+      <h3 className="text-gray-700 text-center font-bold text-xl">图片链接</h3>
+      <div className="flex justify-center">
+        <img src={imageURL} alt={imageURL} />
+      </div>
+      <a href={imageURL} target="_blank">
+        {imageURL}
+      </a>
+      <div className="flex flex-wrap gap-4">
+        <button className="border border-gray-700 px-2" onClick={handleDataURL}>
+          toDataURL
+        </button>
+        <button className="border border-gray-700 px-2" onClick={handleBlob}>
+          toBlobURL
+        </button>
+        <button
+          className="border border-gray-700 px-2"
+          onClick={handleDownload}
+        >
+          下载 - download
+        </button>
+      </div>
+    </Card>
   )
 }

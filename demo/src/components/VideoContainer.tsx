@@ -2,6 +2,7 @@ import raf from 'raf'
 import { useEffect, useRef } from 'react'
 import px from '../../../src'
 import flower from '../assets/videos/flower.webm'
+import Card from './Card'
 
 export default function VideoContainer() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -106,39 +107,34 @@ export default function VideoContainer() {
     },
   ]
   return (
-    <div className="p-12">
-      <div className="border bg-white/70 border-gray-900 shadow-xl space-y-8 p-10">
-        <h2 className="text-gray-700 text-center font-bold text-xl">
-          视频效果
-        </h2>
-        <div className="flex justify-around">
-          <video
-            className="border shadow-xl"
-            onPlay={loop}
-            onPause={handleCancel}
-            ref={videoRef}
-            controls
-          >
-            <source src={flower} type="video/webm" />
-            <p>请使用最新版chrome浏览器</p>
-            <p>use chrome, please</p>
-          </video>
-          <canvas className="border shadow-xl" ref={canvasRef} />
-        </div>
-        <div className="flex flex-wrap gap-4">
-          {buttons.map((btn) => (
-            <button
-              className="border border-gray-700 px-2"
-              key={btn.method}
-              onClick={() => {
-                handleClick(btn.method)
-              }}
-            >
-              {btn.name}
-            </button>
-          ))}
-        </div>
+    <Card title="视频效果">
+      <div className="flex justify-around">
+        <video
+          className="border shadow-xl"
+          onPlay={loop}
+          onPause={handleCancel}
+          ref={videoRef}
+          controls
+        >
+          <source src={flower} type="video/webm" />
+          <p>请使用最新版chrome浏览器</p>
+          <p>use chrome, please</p>
+        </video>
+        <canvas className="border shadow-xl" ref={canvasRef} />
       </div>
-    </div>
+      <div className="flex flex-wrap gap-4">
+        {buttons.map((btn) => (
+          <button
+            className="border border-gray-700 px-2"
+            key={btn.method}
+            onClick={() => {
+              handleClick(btn.method)
+            }}
+          >
+            {btn.name}
+          </button>
+        ))}
+      </div>
+    </Card>
   )
 }
