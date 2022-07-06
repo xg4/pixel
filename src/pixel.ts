@@ -101,11 +101,13 @@ export default class Pixel {
    */
   phantom(options: Partial<PhantomOptions> = {}) {
     const { frame = 32, density = 2 } = options
-    const queue = Array(frame)
-      .fill(null)
-      .map(() => this.$ctx.createImageData(this.$source))
+    const arr: ImageData[] = []
+    for (let i = 0; i < frame; i++) {
+      arr.push(this.$ctx.createImageData(this.$source))
+    }
+
     const getTarget = (x: number) =>
-      queue[Math.floor((frame * (Math.random() + (2 * x) / this.width)) / 3)]
+      arr[Math.floor((frame * (Math.random() + (2 * x) / this.width)) / 3)]
 
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {
@@ -119,7 +121,7 @@ export default class Pixel {
       }
     }
 
-    return queue
+    return arr
   }
 
   origin() {
