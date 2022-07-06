@@ -1,21 +1,5 @@
-import { isCanvas, isImage, isImageData, isVideo, shuffle } from './utils'
-
-export type PxSource =
-  | ImageData
-  | HTMLImageElement
-  | HTMLVideoElement
-  | HTMLCanvasElement
-
-export interface PxOptions {
-  width: number
-  height: number
-}
-
-export interface PhantomOptions {
-  frame: number
-  density: number
-}
-
+import { isCanvas, isImage, isImageData, isVideo, shuffle } from './helpers'
+import { PhantomOptions, PxOptions, PxSource } from './types'
 export default class Pixel {
   private $c: HTMLCanvasElement
   private $ctx: CanvasRenderingContext2D
@@ -69,8 +53,8 @@ export default class Pixel {
   //   return [red, red + 1, red + 2, red + 3]
   // }
 
-  clone() {
-    return new Pixel(this.$source)
+  clone(options?: Partial<PxOptions>) {
+    return new Pixel(this.$source, options)
   }
 
   private cloneImageData() {

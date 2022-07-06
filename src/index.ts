@@ -1,12 +1,14 @@
-import Pixel, { PxOptions } from './pixel'
+import { isPixel } from './helpers'
+import Pixel from './pixel'
+import { PxOptions, PxSource } from './types'
 
-const isPixel = (x: any): x is Pixel => x instanceof Pixel
-
-const px = (x: any, o: Partial<PxOptions> = {}) => {
-  if (isPixel(x)) {
-    return x.clone()
+const px = (source: PxSource, options?: Partial<PxOptions>) => {
+  if (isPixel(source)) {
+    return source.clone(options)
   }
-  return new Pixel(x, o)
+  return new Pixel(source, options)
 }
+
+export { Pixel }
 
 export default px

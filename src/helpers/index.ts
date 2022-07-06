@@ -1,5 +1,9 @@
+import Pixel from '../pixel'
+
 export const isSrc = (url: any): url is string =>
   /^(((blob:)?https?:)?\/\/|data:image|\/)/.test(url)
+
+export const isPixel = (x: any): x is Pixel => x instanceof Pixel
 
 export const isImage = (x: any): x is HTMLImageElement => x instanceof Image
 
