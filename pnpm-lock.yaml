@@ -15,8 +15,10 @@ specifiers:
   '@semantic-release/github': 8.0.4
   '@semantic-release/npm': 9.0.1
   '@semantic-release/release-notes-generator': 10.0.3
+  '@types/lodash': 4.14.182
   husky: 8.0.1
   lint-staged: 13.0.3
+  lodash: 4.17.21
   prettier: 2.7.1
   rimraf: 3.0.2
   rollup: 2.75.7
@@ -39,8 +41,10 @@ devDependencies:
   '@semantic-release/github': 8.0.4_semantic-release@19.0.3
   '@semantic-release/npm': 9.0.1_semantic-release@19.0.3
   '@semantic-release/release-notes-generator': 10.0.3_semantic-release@19.0.3
+  '@types/lodash': 4.14.182
   husky: 8.0.1
   lint-staged: 13.0.3
+  lodash: 4.17.21
   prettier: 2.7.1
   rimraf: 3.0.2
   rollup: 2.75.7
@@ -1802,6 +1806,10 @@ packages:
 
   /@types/estree/0.0.52:
     resolution: {integrity: sha512-BZWrtCU0bMVAIliIV+HJO1f1PR41M7NKjfxrFJwwhKI1KwhwOxYw1SXg9ao+CIMt774nFuGiG6eU+udtbEI9oQ==}
+    dev: true
+
+  /@types/lodash/4.14.182:
+    resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
     dev: true
 
   /@types/minimist/1.2.2:

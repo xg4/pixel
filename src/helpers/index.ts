@@ -1,8 +1,5 @@
 import Pixel from '../pixel'
 
-export const isSrc = (url: any): url is string =>
-  /^(((blob:)?https?:)?\/\/|data:image|\/)/.test(url)
-
 export const isPixel = (x: any): x is Pixel => x instanceof Pixel
 
 export const isImage = (x: any): x is HTMLImageElement => x instanceof Image
@@ -14,12 +11,3 @@ export const isCanvas = (x: any): x is HTMLCanvasElement =>
 
 export const isVideo = (x: any): x is HTMLVideoElement =>
   x instanceof HTMLVideoElement
-
-export function shuffle(arr: Uint8ClampedArray) {
-  let length = arr.length
-  while (length > 1) {
-    let index = Math.floor(Math.random() * length--)
-    ;[arr[length], arr[index]] = [arr[index], arr[length]]
-  }
-  return arr
-}

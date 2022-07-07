@@ -1,5 +1,9 @@
-import { isCanvas, isImage, isImageData, isVideo, shuffle } from './helpers'
+import chunk from 'lodash/chunk'
+import flatten from 'lodash/flatten'
+import shuffle from 'lodash/shuffle'
+import { isCanvas, isImage, isImageData, isVideo } from './helpers'
 import { PhantomOptions, PxOptions, PxSource } from './types'
+
 export default class Pixel {
   private $c: HTMLCanvasElement
   private $ctx: CanvasRenderingContext2D
@@ -158,8 +162,10 @@ export default class Pixel {
    */
   shuffle() {
     const clone = this.cloneImageData()
-    shuffle(clone.data)
-    return new Pixel(clone)
+    const u8Arr = flatten(shuffle(chunk(clone.data, 4)))
+    return new Pixel(
+      new ImageData(new Uint8ClampedArray(u8Arr), clone.width, clone.height)
+    )
   }
 
   /**
