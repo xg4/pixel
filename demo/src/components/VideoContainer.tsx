@@ -3,12 +3,13 @@ import { useEffect, useRef } from 'react'
 import px from '../../../src'
 import flower from '../assets/videos/flower.webm'
 import Card from './Card'
+import { buttons } from './ImageContainer'
 
 export default function VideoContainer() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  const type = useRef('origin')
+  const type = useRef('blur')
   const timer = useRef<number>()
 
   useEffect(() => {
@@ -28,8 +29,8 @@ export default function VideoContainer() {
       return
     }
     const p = px(videoRef.current)
-    const fn = (p as any)[type.current].bind(p)
-    ctx.putImageData(fn(), 0, 0)
+    const nPx = (p as any)[type.current]()
+    ctx.putImageData(nPx.source, 0, 0)
     timer.current = raf(loop)
   }
 
@@ -44,71 +45,9 @@ export default function VideoContainer() {
     }
   }
 
-  const buttons = [
-    {
-      name: '模糊 - blur',
-      method: 'blur',
-    },
-    // {
-    //   name: '锐化 - sharpen',
-    //   method: 'sharpen',
-    // },
-    // {
-    //   name: '高斯模糊 - gaussianBlur',
-    //   method: 'gaussianBlur',
-    // },
-    {
-      name: '浮雕 - relief',
-      method: 'relief',
-    },
-    {
-      name: '灰色调 - adjust',
-      method: 'adjust',
-    },
-    {
-      name: '镜像 - mirror',
-      method: 'mirror',
-    },
-    {
-      name: '乱序 - shuffle',
-      method: 'shuffle',
-    },
-    {
-      name: '熔铸 - casting',
-      method: 'casting',
-    },
-    {
-      name: '连环画 - comic',
-      method: 'comic',
-    },
-    {
-      name: '原始 - origin',
-      method: 'origin',
-    },
-    {
-      name: '灰度 - grayscale',
-      method: 'grayscale',
-    },
-    {
-      name: '反向颜色 - invert',
-      method: 'invert',
-    },
-    {
-      name: '亮度10 - brightness',
-      method: 'brightness',
-    },
-    {
-      name: '对比度10 - contrast',
-      method: 'contrast',
-    },
-    {
-      name: '怀旧 - nostalgia',
-      method: 'nostalgia',
-    },
-  ]
   return (
     <Card title="视频效果">
-      <div className="flex justify-around">
+      <div className="flex justify-around items-center">
         <video
           className="border shadow-xl"
           onPlay={loop}
@@ -120,6 +59,7 @@ export default function VideoContainer() {
           <p>请使用最新版chrome浏览器</p>
           <p>use chrome, please</p>
         </video>
+        <span>===&gt;</span>
         <canvas className="border shadow-xl" ref={canvasRef} />
       </div>
       <div className="flex flex-wrap gap-4">

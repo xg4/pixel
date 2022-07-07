@@ -4,8 +4,6 @@ import {
   forwardRef,
   ImgHTMLAttributes,
   ReactEventHandler,
-  useEffect,
-  useRef,
   useState,
 } from 'react'
 import px from '../../../src'
@@ -20,11 +18,12 @@ const PhantomImage = forwardRef(
     { frame = 32, visible, onLoad, ...restProps }: PhantomImageProps,
     ref: ForwardedRef<HTMLImageElement>
   ) => {
-    const [phantoms, setPhantoms] = useState<ImageData[]>([])
+    const [urls, setUrls] = useState<string[]>([])
 
-    const handleLoad: ReactEventHandler<HTMLImageElement> = (evt) => {
+    const handleLoad: ReactEventHandler<HTMLImageElement> = async (evt) => {
       const phantoms = px(evt.currentTarget).phantom({ frame })
-      setPhantoms(phantoms)
+      const urls = await Promise.all(phantoms.map((p) => p.toBlobURL()))
+      setUrls(urls)
       onLoad && onLoad(evt)
     }
 
@@ -49,7 +48,7 @@ const PhantomImage = forwardRef(
           onLoad={handleLoad}
           ref={ref}
         />
-        {phantoms.map((p, i) => {
+        {urls.map((url, i) => {
           const style: CSSProperties = visible
             ? {
                 ...baseStyle,
@@ -62,35 +61,11 @@ const PhantomImage = forwardRef(
                 opacity: 0,
               }
             : baseStyle
-          return <Item style={style} imageData={p} key={i} />
+          return <img src={url} style={style} alt="" key={url} />
         })}
       </div>
     )
   }
 )
-
-function Item({
-  imageData,
-  style,
-}: {
-  imageData: ImageData
-  style?: CSSProperties
-}) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  useEffect(() => {
-    if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d')
-      ctx && ctx.putImageData(imageData, 0, 0)
-    }
-  }, [])
-  return (
-    <canvas
-      style={style}
-      width={imageData.width}
-      height={imageData.height}
-      ref={canvasRef}
-    />
-  )
-}
 
 export default PhantomImage

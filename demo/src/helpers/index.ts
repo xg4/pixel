@@ -1,4 +1,4 @@
-export function download(url: string, name = 'unknown') {
+export function download(url: string, name = 'pixel') {
   const a = document.createElement('a')
   a.download = name || ''
   a.href = url
