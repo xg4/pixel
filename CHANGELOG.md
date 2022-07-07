@@ -1,3 +1,9 @@
+# [2.1.0](https://github.com/xg4/pixel/compare/v2.0.1...v2.1.0) (2022-07-07)
+
+### Features
+
+- add the size parameter to the shuffle method ([28d5045](https://github.com/xg4/pixel/commit/28d5045f79a32ec30ac2e3290d13872172290286))
+
 ## [2.0.1](https://github.com/xg4/pixel/compare/v2.0.0...v2.0.1) (2022-07-07)
 
 ### Bug Fixes
