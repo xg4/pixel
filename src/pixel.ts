@@ -13,9 +13,21 @@ export default class Pixel {
     return this.$c.height
   }
 
+  set width(width: number) {
+    this.$c.width = width
+  }
+
+  set height(height: number) {
+    this.$c.height = height
+  }
+
   constructor(data: PxSource, options: Partial<PxOptions> = {}) {
     this.$c = document.createElement('canvas')
-    this.$ctx = this.$c.getContext('2d') as CanvasRenderingContext2D
+    const ctx = this.$c.getContext('2d')
+    if (!ctx) {
+      throw new Error('canvas not support 2d context')
+    }
+    this.$ctx = ctx
     this.$c.width = options.width || data.width
     this.$c.height = options.height || data.height
     this.$source = this.parse(data)
@@ -53,8 +65,8 @@ export default class Pixel {
   //   return [red, red + 1, red + 2, red + 3]
   // }
 
-  clone(options?: Partial<PxOptions>) {
-    return new Pixel(this.$source, options)
+  clone() {
+    return new Pixel(this.$source, this)
   }
 
   private cloneImageData() {
@@ -68,10 +80,19 @@ export default class Pixel {
     this.$ctx.putImageData(this.$source, 0, 0)
   }
 
-  private toBlob(type?: string, quality?: any): Promise<Blob | null> {
+  private toBlob(type?: string, quality?: any): Promise<Blob> {
     return new Promise((resolve) => {
       this.putImageData()
-      this.$c.toBlob(resolve, type, quality)
+      this.$c.toBlob(
+        (blob) => {
+          if (!blob) {
+            throw new Error('canvas toBlob error, blob is null')
+          }
+          resolve(blob)
+        },
+        type,
+        quality
+      )
     })
   }
 
@@ -82,9 +103,6 @@ export default class Pixel {
 
   async toBlobURL(type?: string, quality?: any) {
     const blob = await this.toBlob(type, quality)
-    if (!blob) {
-      throw new Error('canvas toBlob error, blob is null')
-    }
     return URL.createObjectURL(blob)
   }
 
@@ -121,7 +139,7 @@ export default class Pixel {
       }
     }
 
-    return arr
+    return arr.map((item) => new Pixel(item))
   }
 
   origin() {
