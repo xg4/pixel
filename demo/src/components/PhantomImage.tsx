@@ -31,7 +31,7 @@ const PhantomImage = forwardRef(
       position: 'absolute',
       left: 0,
       top: 0,
-      transition: 'transform 2s ease-out, opacity 2s ease-out',
+      transition: 'transform 1s ease-out, opacity 1s ease-out',
       opacity: 1,
       transform: 'rotate(0deg) translate(0px, 0px) rotate(0deg)',
       transitionDelay: '0s',

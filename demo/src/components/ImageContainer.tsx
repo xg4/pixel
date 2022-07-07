@@ -9,14 +9,6 @@ export const buttons = [
     name: '模糊 - blur',
     method: 'blur',
   },
-  // {
-  //   name: '锐化 - sharpen',
-  //   method: 'sharpen',
-  // },
-  // {
-  //   name: '高斯模糊 - gaussianBlur',
-  //   method: 'gaussianBlur',
-  // },
   {
     name: '浮雕 - relief',
     method: 'relief',
@@ -65,7 +57,7 @@ export const buttons = [
 
 export default function ImageContainer() {
   const imageRef = useRef<HTMLImageElement>(null)
-  const [currentUrl, setCurrentUrl] = useState('')
+  const [currentUrl, setCurrentUrl] = useState(box)
   const nPx = useRef<Pixel>()
 
   const handleClick = async (method: string) => {
