@@ -70,9 +70,15 @@ export default class Pixel {
   }
 
   private cloneImageData() {
-    const clone = this.$ctx.createImageData(this.$source)
-    clone.data.set(this.$source.data)
-    return clone
+    return new ImageData(
+      new Uint8ClampedArray(this.$source.data),
+      this.$source.width,
+      this.$source.height
+    )
+  }
+
+  private createTransparentImageData() {
+    return this.$ctx.createImageData(this.$source)
   }
 
   private putImageData() {
@@ -118,10 +124,11 @@ export default class Pixel {
    * @param options
    */
   phantom(options: Partial<PhantomOptions> = {}) {
+    const clone = this.cloneImageData()
     const { frame = 32, density = 2 } = options
     const arr: ImageData[] = []
     for (let i = 0; i < frame; i++) {
-      arr.push(this.$ctx.createImageData(this.$source))
+      arr.push(this.createTransparentImageData())
     }
 
     const getTarget = (x: number) =>
@@ -133,13 +140,13 @@ export default class Pixel {
         const index = this.getPixelIndex(x, y, target.width)
         for (let n = 0; n < density; n++) {
           for (let offset = 0; offset < 4; offset++) {
-            target.data[index + offset] = this.$source.data[index + offset]
+            target.data[index + offset] = clone.data[index + offset]
           }
         }
       }
     }
 
-    return arr.map((item) => new Pixel(item))
+    return arr.map((imageData) => new Pixel(imageData))
   }
 
   origin() {

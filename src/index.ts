@@ -4,7 +4,7 @@ import { PxOptions, PxSource } from './types'
 
 const px = (source: PxSource, options?: Partial<PxOptions>) => {
   if (isPixel(source)) {
-    return source.clone(options)
+    return source.clone()
   }
   return new Pixel(source, options)
 }
