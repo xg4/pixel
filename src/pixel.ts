@@ -21,6 +21,10 @@ export default class Pixel {
     this.$c.height = height
   }
 
+  get source() {
+    return this.$source
+  }
+
   constructor(data: PxSource, options: Partial<PxOptions> = {}) {
     this.$c = document.createElement('canvas')
     const ctx = this.$c.getContext('2d')
@@ -149,17 +153,13 @@ export default class Pixel {
     return arr.map((imageData) => new Pixel(imageData))
   }
 
-  origin() {
-    return this.$source
-  }
-
   /**
    * @description 随机 乱序 打散
    */
   shuffle() {
-    const { data } = this.$source
-    shuffle(data)
-    return this.$source
+    const clone = this.cloneImageData()
+    shuffle(clone.data)
+    return new Pixel(clone)
   }
 
   /**
@@ -175,12 +175,12 @@ export default class Pixel {
         const index = this.getPixelIndex(x, y, width)
         const prev = this.getPixelIndex(x - 1, y, width)
         const next = this.getPixelIndex(x + 1, y, width)
-        data[index] = clone.data[next] - clone.data[prev] + 128
-        data[index + 1] = clone.data[next + 1] - clone.data[prev + 1] + 128
-        data[index + 2] = clone.data[next + 2] - clone.data[prev + 2] + 128
+        clone.data[index] = data[next] - data[prev] + 128
+        clone.data[index + 1] = data[next + 1] - data[prev + 1] + 128
+        clone.data[index + 2] = data[next + 2] - data[prev + 2] + 128
       }
     }
-    return this.$source
+    return new Pixel(clone)
   }
 
   /**
@@ -210,22 +210,22 @@ export default class Pixel {
             }
 
             const index2 = this.getPixelIndex(colOffset, rowOffset, width)
-            mixRed += clone.data[index2]
-            mixGreen += clone.data[index2 + 1]
-            mixBlue += clone.data[index2 + 2]
+            mixRed += data[index2]
+            mixGreen += data[index2 + 1]
+            mixBlue += data[index2 + 2]
           }
         }
 
-        data[index] = mixRed / 25.0
-        data[index + 1] = mixGreen / 25.0
-        data[index + 2] = mixBlue / 25.0
+        clone.data[index] = mixRed / 25.0
+        clone.data[index + 1] = mixGreen / 25.0
+        clone.data[index + 2] = mixBlue / 25.0
 
         mixRed = 0.0
         mixGreen = 0.0
         mixBlue = 0.0
       }
     }
-    return this.$source
+    return new Pixel(clone)
   }
 
   /**
@@ -241,26 +241,27 @@ export default class Pixel {
         const index = this.getPixelIndex(x, y, width)
         const mIndex = (width - 1 - x + y * width) * 4
 
-        data[mIndex] = clone.data[index]
-        data[mIndex + 1] = clone.data[index + 1]
-        data[mIndex + 2] = clone.data[index + 2]
-        data[mIndex + 3] = clone.data[index + 3]
+        clone.data[mIndex] = data[index]
+        clone.data[mIndex + 1] = data[index + 1]
+        clone.data[mIndex + 2] = data[index + 2]
+        clone.data[mIndex + 3] = data[index + 3]
       }
     }
-    return this.$source
+    return new Pixel(clone)
   }
 
   /**
    * @description 熔铸效果
    */
   casting() {
-    const { data } = this.$source
+    const clone = this.cloneImageData()
+    const { data } = clone
     for (let i = 0; i < data.length - 4; i += 4) {
       data[i] = (data[i] * 128) / (data[i + 1] + data[i + 2] + 1)
       data[i + 1] = (data[i + 1] * 128) / (data[i] + data[i + 2] + 1)
       data[i + 2] = (data[i + 2] * 128) / (data[i] + data[i + 1] + 1)
     }
-    return this.$source
+    return new Pixel(clone)
   }
 
   /**
@@ -269,7 +270,8 @@ export default class Pixel {
    *              但连环画增大了图像的对比度，使整体明暗效果更强
    */
   comic() {
-    const { data } = this.$source
+    const clone = this.cloneImageData()
+    const { data } = clone
     for (let i = 0; i < data.length - 4; i += 4) {
       data[i] =
         (Math.abs(data[i + 1] - data[i + 2] + data[i + 1] + data[i]) *
@@ -284,27 +286,29 @@ export default class Pixel {
           data[i + 1]) /
         256
     }
-    return this.$source
+    return new Pixel(clone)
   }
 
   /**
    * @description 灰色调 adjust color values and make it more darker and gray
    */
   adjust() {
-    const { data } = this.$source
+    const clone = this.cloneImageData()
+    const { data } = clone
     for (let i = 0; i < data.length - 4; i += 4) {
       data[i] = 0.272 * data[i] + 0.534 * data[i + 1] + 0.131 * data[i + 2]
       data[i + 1] = 0.349 * data[i] + 0.686 * data[i + 1] + 0.168 * data[i + 2]
       data[i + 2] = 0.393 * data[i] + 0.769 * data[i + 1] + 0.189 * data[i + 2]
     }
-    return this.$source
+    return new Pixel(clone)
   }
 
   /**
    * @description 怀旧效果
    */
   nostalgia() {
-    const { data } = this.$source
+    const clone = this.cloneImageData()
+    const { data } = clone
     for (let i = 0; i < data.length - 4; i += 4) {
       const dr = 0.393 * data[i] + 0.769 * data[i + 1] + 0.189 * data[i + 2]
       const dg = 0.349 * data[i] + 0.686 * data[i + 1] + 0.168 * data[i + 2]
@@ -316,7 +320,7 @@ export default class Pixel {
       data[i + 1] = scale * dg + (1 - scale) * data[i + 1]
       data[i + 2] = scale * db + (1 - scale) * data[i + 2]
     }
-    return this.$source
+    return new Pixel(clone)
   }
 
   /**
@@ -324,13 +328,14 @@ export default class Pixel {
    * @param value -100~100
    */
   brightness(value = 10) {
-    const { data } = this.$source
+    const clone = this.cloneImageData()
+    const { data } = clone
     for (var i = 0; i < data.length; i += 4) {
       data[i] += 255 * (value / 100)
       data[i + 1] += 255 * (value / 100)
       data[i + 2] += 255 * (value / 100)
     }
-    return this.$source
+    return new Pixel(clone)
   }
 
   /**
@@ -338,7 +343,8 @@ export default class Pixel {
    * @param value
    */
   contrast(value = 10) {
-    const { data } = this.$source
+    const clone = this.cloneImageData()
+    const { data } = clone
     const factor = (259.0 * (value + 255.0)) / (255.0 * (259.0 - value))
     for (var i = 0; i < data.length; i += 4) {
       data[i] = factor * (data[i] - 128.0) + 128.0
@@ -347,33 +353,35 @@ export default class Pixel {
 
       data[i + 2] = factor * (data[i + 2] - 128.0) + 128.0
     }
-    return this.$source
+    return new Pixel(clone)
   }
 
   /**
    * @description 反向颜色
    */
   invert() {
-    const { data } = this.$source
+    const clone = this.cloneImageData()
+    const { data } = clone
     for (var i = 0; i < data.length; i += 4) {
       data[i] = 255 - data[i]
       data[i + 1] = 255 - data[i + 1]
       data[i + 2] = 255 - data[i + 2]
     }
-    return this.$source
+    return new Pixel(clone)
   }
 
   /**
    * @description 灰度 黑白照
    */
   grayscale() {
-    const { data } = this.$source
+    const clone = this.cloneImageData()
+    const { data } = clone
     for (let i = 0; i < data.length; i += 4) {
       const avg = (data[i] + data[i + 1] + data[i + 2]) / 3
       data[i] = avg
       data[i + 1] = avg
       data[i + 2] = avg
     }
-    return this.$source
+    return new Pixel(clone)
   }
 }
