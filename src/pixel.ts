@@ -160,9 +160,9 @@ export default class Pixel {
   /**
    * @description 随机 乱序 打散
    */
-  shuffle() {
+  shuffle(size = 1) {
     const clone = this.cloneImageData()
-    const u8Arr = flatten(shuffle(chunk(clone.data, 4)))
+    const u8Arr = flatten(shuffle(chunk(clone.data, 4 * size)))
     return new Pixel(
       new ImageData(new Uint8ClampedArray(u8Arr), clone.width, clone.height)
     )
