@@ -1,3 +1,9 @@
+## [2.0.1](https://github.com/xg4/pixel/compare/v2.0.0...v2.0.1) (2022-07-07)
+
+### Bug Fixes
+
+- modify shuffle method ([85cffb2](https://github.com/xg4/pixel/commit/85cffb2d5a9ba365720d0b24294ee6f02136b00b))
+
 # [2.0.0](https://github.com/xg4/pixel/compare/v1.0.0...v2.0.0) (2022-07-07)
 
 ### Features
